@@ -1,9 +1,11 @@
+'use client'
 import { useMemo } from "react";
-import { HiChat, HiUsers } from "react-icons/hi";
+import { HiUsers } from "react-icons/hi";
 import { FiLogOut } from "react-icons/fi";
-import { useRouter } from "next/router";
 import { IconType } from "react-icons";
 import { useAuth } from "../providers/AuthProvider"; // Assuming you have this set up
+import { usePathname, useRouter } from "next/navigation";
+import { MdDashboardCustomize } from "react-icons/md";
 
 // Define the Route interface
 interface Route {
@@ -16,32 +18,21 @@ interface Route {
 
 // Custom hook for routes
 const useRoutes = (): Route[] => {
-  const { logout } = useAuth();
-  const router = useRouter();
-  const pathname = router.pathname;
+
+  const pathname = usePathname()
 
   const routes: Route[] = useMemo(
     () => [
       {
-        label: "watch",
-        href: "/watch",
-        icon: HiChat,
-        active: pathname === "/watch",
+        label: "Dashboard",
+        href: "/dashboard",
+        icon: MdDashboardCustomize,
+        active: pathname === "/dashboard",
       },
-      {
-        label: "profile",
-        href: "/profile",
-        icon: HiUsers,
-        active: pathname === "/profile",
-      },
-      {
-        label: "Logout",
-        href: "#",
-        icon: FiLogOut,
-        onClick: () => logout(),
-      },
+
+     
     ],
-    [pathname, logout]
+    [pathname]
   );
 
   return routes;

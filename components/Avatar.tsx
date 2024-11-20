@@ -23,7 +23,7 @@ const Avatar: React.FC<AvatarProps> = ({ user }) => {
                     alt="Avatar"
                 />
             </div>
-            {user?.status || true ? (
+            { false ? (
                 <span
                     className="
             absolute 

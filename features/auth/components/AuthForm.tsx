@@ -47,7 +47,16 @@ const AuthForm = () => {
                 console.log(response)
                 if (response?.user) {
                     loginContext(response.token, response.user);
-                    router.replace("/");
+                     toast("Login Succssfully!", {
+                       icon: "👏",
+                       style: {
+                         borderRadius: "10px",
+                         background: "#333",
+                         color: "#fff",
+                       },
+                     });
+                    router.replace("/dashboard");
+                   
                 } else {
                     throw new Error('User data is missing');
                 }
@@ -55,8 +64,17 @@ const AuthForm = () => {
                 const { email, password, username } = data as RegisterFormType;
                 const response = await register({ email, password, username }).unwrap();
                 console.log(response);
-                toast.success('Regester Succssfully')
+
+          toast("Regester Succssfully!", {
+            icon: "👏",
+            style: {
+              borderRadius: "10px",
+              background: "#333",
+              color: "#fff",
+            },
+          });
                 setVariant('LOGIN');
+                return
             }
         } catch (error: any) {
             console.error(error?.data?.message || error.message || 'Authentication failed');
@@ -69,92 +87,96 @@ const AuthForm = () => {
 
 
     return (
-        <div className='mt-8 sm:mx-auto sm:w-full sm:max-w-md'>
-            <div className='bg-white px-4 py-8 shadow sm:rounded-lg sm:px-10'>
-                <form className='space-y-6' onSubmit={handleSubmit(onSubmit)}>
+      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+        <div className=" px-4 py-8 shadow sm:rounded-lg sm:px-10">
+          <form className="space-y-10 " onSubmit={handleSubmit(onSubmit)}>
+          
+              <h2
+                className="
+            pb-6 
+            text-center 
+            text-3xl 
+            font-bold 
+            tracking-tight 
+            text-white
+            mb-10
+          "
+              >
+                {variant === "REGISTER"
+                  ? "Create an account"
+                  : "Sign in to your account"}
+              </h2>
+      
 
+            {/* REGISTER Variant Fields */}
+            {variant === "REGISTER" && (
+              <Input
+                disabled={isLoading}
+                register={registerForm}
+                errors={errors}
+                required={false}
+                id="username"
+                label="Username"
+              />
+            )}
 
-                    {/* REGISTER Variant Fields */}
-                    {variant === 'REGISTER' && (
-                        <Input
-                            disabled={isLoading}
-                            register={registerForm}
-                            errors={errors}
-                            required={false}
-                            id='username'
-                            label='Username'
-                        />
-                    )}
+            <Input
+              disabled={isLoading}
+              register={registerForm}
+              errors={errors}
+              required={true}
+              id="email"
+              label="Email address"
+              type="email"
+            />
+            <Input
+              disabled={isLoading}
+              register={registerForm}
+              errors={errors}
+              required={true}
+              id="password"
+              label="Password"
+              type="password"
+            />
 
-                    <Input
-                        disabled={isLoading}
-                        register={registerForm}
-                        errors={errors}
-                        required={true}
-                        id='email'
-                        label='Email address'
-                        type='email'
-                    />
-                    <Input
-                        disabled={isLoading}
-                        register={registerForm}
-                        errors={errors}
-                        required={true}
-                        id='password'
-                        label='Password'
-                        type='password'
-                    />
-
-                    {/* REGISTER Variant Fields */}
-                    {variant === 'REGISTER' && (
-                        <Input
-                            disabled={isLoading}
-                            register={registerForm}
-                            errors={errors}
-                            required={true}
-                            id='confirmPassword'
-                            label='Confirm Password'
-                            type='password'
-                        />
-                    )}
-                    <div>
-                        <Button
-                            disabled={isLoading}
-                            fullWidth
-                            type='submit'
-                            style='flex items-center gap-x-2'
-                        >
-                            {variant === 'LOGIN' ? 'Sign in' : 'Register'}
-                            {isLoading && <FiLoader className='animate-spin' />}
-                        </Button>
-                    </div>
-                </form>
-
-                <div className='mt-6'>
-                    <div className='relative'>
-                        <div className='absolute inset-0 flex items-center'>
-                            <div className='w-full border-t border-gray-300' />
-                        </div>
-                        <div className='relative flex justify-center text-sm'>
-                            <span className='bg-white px-2 text-gray-500'>
-                                Or continue with
-                            </span>
-                        </div>
-                    </div>
-                </div>
-
-                <div className='flex gap-2 justify-center text-sm mt-6 px-2 text-gray-500'>
-                    <div>
-                        {variant === 'LOGIN'
-                            ? 'New to Messenger?'
-                            : 'Already have an account?'}
-                    </div>
-                    <div onClick={toggleVariant} className='underline cursor-pointer'>
-                        {variant === 'LOGIN' ? 'Create an account' : 'Login'}
-                    </div>
-                </div>
+            {/* REGISTER Variant Fields */}
+            {variant === "REGISTER" && (
+              <Input
+                disabled={isLoading}
+                register={registerForm}
+                errors={errors}
+                required={true}
+                id="confirmPassword"
+                label="Confirm Password"
+                type="password"
+              />
+            )}
+            <div>
+              <Button
+                disabled={isLoading}
+                fullWidth
+                type="submit"
+                style="flex items-center gap-x-2 mt-4 py-4 "
+              >
+                {variant === "LOGIN" ? "Sign in" : "Register"}
+                {isLoading && <FiLoader className="animate-spin" />}
+              </Button>
             </div>
+          </form>
+
+
+          <div className="flex gap-2 justify-center text-sm mt-6 px-2 text-gray-500 ">
+            <div>
+              {variant === "LOGIN"
+                ? "New ?"
+                : "Already have an account?"}
+            </div>
+            <div onClick={toggleVariant} className="underline cursor-pointer">
+              {variant === "LOGIN" ? "Create an account" : "Login"}
+            </div>
+          </div>
         </div>
+      </div>
     );
 };
 

@@ -1,6 +1,6 @@
 
 import clsx from "clsx";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 
 interface MobileItemProps {
   href: string;
@@ -24,7 +24,7 @@ const MobileItem: React.FC<MobileItemProps> = ({
   return ( 
     <Link
       onClick={handleClick} 
-      to={href} 
+      href={href} 
       className={clsx(`
         group 
         flex 

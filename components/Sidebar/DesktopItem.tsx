@@ -1,6 +1,6 @@
 import clsx from 'clsx';
+import Link from 'next/link';
 import { IconType } from 'react-icons';
-import { Link } from 'react-router-dom';
 
 interface DesktopItemProps {
   label: string;
@@ -26,8 +26,9 @@ const DesktopItem: React.FC<DesktopItemProps> = ({
   return (
     <li onClick={handleClick} key={label}>
       <Link
-        to={href}
-        className={clsx(`
+        href={href}
+        className={clsx(
+          `
             group 
             flex 
             gap-x-3 
@@ -37,10 +38,10 @@ const DesktopItem: React.FC<DesktopItemProps> = ({
             leading-6 
             font-semibold 
             text-gray-500 
-            hover:text-black 
-            hover:bg-gray-100
+            hover:text-[#8C73D3]
+           
           `,
-          active && 'bg-gray-100 text-black'
+          active && " text-[#8C73D3]"
         )}
       >
         <Icon className="h-6 w-6 shrink-0" aria-hidden="true" />

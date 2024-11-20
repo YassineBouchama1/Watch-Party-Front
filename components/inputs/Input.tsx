@@ -26,15 +26,15 @@ const Input = <T extends FieldValues>({
   disabled,
 }: InputProps<T>) => {
   return (
-    <div>
+    <div className="mt-3">
       <label
         htmlFor={id}
-        className='block text-sm font-medium leading-6 text-gray-900'
+        className=" block text-sm font-medium leading-6 text-white "
       >
         {label}
-        {required && <span className='text-rose-500 ml-1'>*</span>}
+        {required && <span className="text-rose-500 ml-1">*</span>}
       </label>
-      <div className='mt-2'>
+      <div className="mt-1">
         <input
           id={id}
           type={type}
@@ -50,7 +50,8 @@ const Input = <T extends FieldValues>({
               border-0
               py-1.5
               px-2
-              text-gray-900
+              bg-[#303136]
+              text-white
               shadow-sm
               ring-1
               ring-inset
@@ -62,12 +63,12 @@ const Input = <T extends FieldValues>({
               sm:text-sm
               sm:leading-6
             `,
-            errors[id] && 'focus:ring-rose-500 ring-rose-500',
-            disabled && 'opacity-50 cursor-default'
+            errors[id] && "focus:ring-rose-500 ring-rose-500",
+            disabled && "opacity-50 cursor-default"
           )}
         />
         {required && errors[id] && (
-          <span className='text-sm text-rose-500 mt-1 block'>
+          <span className="text-sm text-rose-500 mt-1 block">
             {errors[id]?.message as string}
           </span>
         )}
