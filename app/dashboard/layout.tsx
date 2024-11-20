@@ -1,6 +1,7 @@
 
 import { Metadata } from "next";
-import Sidebar from "@/components/Sidebar/Sidebar";
+import SideBar from "@/components/SideBar";
+import FormBtn from "@/features/rooms/components/FormBtn";
 
 export const metadata: Metadata = {
   title: "Watch Part | Dashboard",
@@ -13,13 +14,14 @@ export default async function DashboardLayout({
 }>) {
  
   return (
-    <div className="flex h-full ">
-      <Sidebar />
-      <main className="flex-1 overflow-auto">
-        
-          {children}
-       
-      </main>
+    <div className="relative  bg-gray-900 h-full flex items-center justify-center">
+      <div className="bg-gray-800 flex-1 min-h-screen h-full w-screen flex flex-col space-y-5 lg:space-y-0 lg:flex-row lg:space-x-10   sm:p-6 sm:my-2 sm:mx-4 sm:rounded-2xl">
+        <SideBar />
+     
+    
+        {children}
+    
+      </div>
     </div>
   );
 }

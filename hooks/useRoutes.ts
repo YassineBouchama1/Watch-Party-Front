@@ -6,6 +6,8 @@ import { IconType } from "react-icons";
 import { useAuth } from "../providers/AuthProvider"; // Assuming you have this set up
 import { usePathname, useRouter } from "next/navigation";
 import { MdDashboardCustomize } from "react-icons/md";
+import { RiFriendicaFill } from "react-icons/ri";
+import { CiSettings } from "react-icons/ci";
 
 // Define the Route interface
 interface Route {
@@ -29,8 +31,12 @@ const useRoutes = (): Route[] => {
         icon: MdDashboardCustomize,
         active: pathname === "/dashboard",
       },
-
-     
+      {
+        label: "Setting",
+        href: "/dashboard/setting",
+        icon: CiSettings,
+        active: pathname === "/dashboard/setting",
+      },
     ],
     [pathname]
   );
