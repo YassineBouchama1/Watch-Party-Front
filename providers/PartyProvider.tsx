@@ -9,16 +9,15 @@ import React, {
   ReactNode,
 } from "react";
 import { useSocket } from "@/providers/SocketProvider";
-import Modal from "@/components/Modal"; // Adjust the import path as necessary
-import { v4 as uuidv4 } from "uuid"; // Import UUID for generating unique IDs
+import Modal from "@/components/Modal";
+import { v4 as uuidv4 } from "uuid";
 import { useAuth } from "./AuthProvider";
+import toast from "react-hot-toast";
 
-// Define the shape of the context
 interface PartyContextType {
   usersInParty: { userId: string; username: string; role: string }[];
 }
 
-// Define the props for the PartyProvider component
 interface PartyProviderProps {
   children: ReactNode;
   partyId: string;
@@ -77,16 +76,44 @@ export const PartyProvider: React.FC<PartyProviderProps> = ({
         (data: { userId: string; username: string; role: string }) => {
           setUsersInParty((prevUsers) => [...prevUsers, data]);
           console.log(`${data.username} has joined the party`);
+          toast(`${data.username} has joined the party `, {
+            position: "bottom-right",
+            duration: 3000,
+          });
         }
       );
 
       // Listen for user disconnections in the same party
-      socket.on("user:leaveParty", (data: { userId: string }) => {
-        setUsersInParty((prevUsers) =>
-          prevUsers.filter((user) => user.userId !== data.userId)
-        );
-        console.log(`${data.userId} has left the party`);
-      });
+      socket.on(
+        "user:leaveParty",
+        (data: { userId: string; username: string }) => {
+          setUsersInParty((prevUsers) =>
+            prevUsers.filter((user) => user.userId !== data.userId)
+          );
+          console.log(`${data.username} has left the party`);
+          toast(`${data.username} has left the party `, {
+            position: "bottom-right",
+            duration: 3000,
+          });
+        }
+      );
+
+      // Listen for user leaving the party but staying connected
+      socket.on(
+        "user:leftParty",
+        (data: { userId: string; username: string }) => {
+          setUsersInParty((prevUsers) =>
+            prevUsers.filter((user) => user.userId !== data.userId)
+          );
+          console.log(
+            `${data.username} has left the party but is still connected`
+          );
+          toast(`${data.username} has left the party but is still connected`, {
+            position: "bottom-right",
+            duration: 3000,
+          });
+        }
+      );
     }
   };
 

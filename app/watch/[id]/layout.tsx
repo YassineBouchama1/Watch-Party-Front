@@ -7,20 +7,23 @@ export const metadata: Metadata = {
   description: "Watch video together",
 };
 
-
-
 export default async function DashboardLayout({
   children,
+  params,
 }: Readonly<{
   children: React.ReactNode;
+  params: { id: string }; 
 }>) {
-  // Get decrypted cookies
+
+
+  // Get  authed user
   const { user, guest } = await getCookiesServer();
 
-  // Determine which user is authenticated: guest or user
+  // here i determine which user is authenticated: guest or user
   const userAuthed = user || guest;
 
-  const partyId = "partyid"; // Replace with actual logic to get the party ID
+  // cxtract the partyId from the URL parameters
+  const partyId = params.id;
 
   return (
     <PartyProvider partyId={partyId} userAuthed={userAuthed}>
