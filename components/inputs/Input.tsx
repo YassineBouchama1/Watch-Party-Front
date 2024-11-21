@@ -50,7 +50,7 @@ const Input = <T extends FieldValues>({
               border-0
               py-1.5
               px-2
-              bg-[#303136]
+              bg-gray-900
               text-white
               shadow-sm
               ring-1

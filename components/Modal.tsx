@@ -19,7 +19,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
           leaveFrom='opacity-100'
           leaveTo='opacity-0'
         >
-          <div className='fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity' />
+          <div className='fixed inset-0 bg-gray-700/80 bg-opacity-75 transition-opacity' />
         </Transition.Child>
         <div className='fixed inset-0 z-10 overflow-y-auto'>
           <div
@@ -48,7 +48,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
             transform
             overflow-hidden
             rounded-lg
-            bg-white
+            bg-gray-800
             px-4
             pb-4
             text-left
@@ -77,7 +77,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
                     type='button'
                     className='
                   rounded-md
-                  bg-white
+                 
                   text-gray-400
                   hover:text-gray-500
                   focus:outline-none

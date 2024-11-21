@@ -14,10 +14,10 @@ export default function Auth() {
         py-12 
         sm:px-6 
         lg:px-8 
+        bg-gray-900
         
       "
     >
-  
       <AuthForm />
     </div>
   );

@@ -46,7 +46,6 @@ export default async function middleware(req: NextRequest) {
   // Get decrypted cookies
   const { token, user } = getDecryptedCookies(req);
 
-  console.log(token, user);
 
   const isAuth = isAuthRoute(req.nextUrl.pathname, authRoutes);
   const isAdmin = isAuthRoute(req.nextUrl.pathname, authRoutesAdmin);
