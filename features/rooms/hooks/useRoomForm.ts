@@ -29,16 +29,17 @@ export const useRoomForm = () => {
       playList: playlistUrls,
     };
 
-    try {
-      await addRoom(roomData).unwrap();
-      toast.success("Room created successfully!");
-      reset();
-      setPlaylistUrls([]);
-      dispatch(closeModal())
-    } catch (err: any) {
-      setErrorApi(err.data?.message || "Failed to create room");
-      toast.error(err.data?.message || "Failed to create room");
-    }
+    // if (!isVisible) return toast.error( "Failed to create room");
+      try {
+        await addRoom(roomData).unwrap();
+        toast.success("Room created successfully!");
+        reset();
+        setPlaylistUrls([]);
+        dispatch(closeModal());
+      } catch (err: any) {
+        setErrorApi(err.data?.message || "Failed to create room");
+        toast.error(err.data?.message || "Failed to create room");
+      }
   };
 
   return {

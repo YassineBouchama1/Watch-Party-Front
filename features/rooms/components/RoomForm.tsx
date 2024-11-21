@@ -99,10 +99,10 @@ export default function RoomForm() {
                   <p className="text-white">
                     Make room visible to friends and their friends
                   </p>
-                  <p className="text-gray-400 text-sm">
+                  {/* <p className="text-gray-400 text-sm">
                     This will display the room card on their home page. They
                     will be required to "knock" if they want to join, however.
-                  </p>
+                  </p> */}
                 </div>
               </label>
             </div>

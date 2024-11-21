@@ -5,31 +5,28 @@ import { useAuth } from "../providers/AuthProvider";
 import toast from "react-hot-toast";
 
 
-interface SocketContextType {
+interface PartyContextType {
   socket: typeof socket;
   onlineUsers: Set<string>;
   isConnected: boolean;
 }
 
-const SocketContext = createContext<SocketContextType | undefined>(undefined);
+const PartyContext = createContext<PartyContextType | undefined>(undefined);
 //this is the config socketion
-export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
+export const PartyProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [isConnected, setIsConnected] = useState(false);
   const [onlineUsers, setOnlineUsers] = useState<Set<string>>(new Set());
-  const { token } = useAuth();
-
-
-  const username = 'fak guest'
+  const { token, user } = useAuth();
 
    useEffect(() => {
-     if (token || username) {
+     if (token || user?.username) {
        // Initialize socket connection
        if (token) {
          socket.auth = { token };
-       } else if (username) {
-         socket.auth = { username: username };
+       } else if (user?.username) {
+         socket.auth = { username: user.username };
        }
        socket.connect();
 
@@ -66,13 +63,13 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
        });
 
        // Initial online users
-       //  socket.on("onlineUsers", (users) => {
-       //    setOnlineUsers(
-       //      new Set(
-       //        users.map((u: { userId: string; username: string }) => u.userId)
-       //      )
-       //    );
-       //  });
+       socket.on("onlineUsers", (users) => {
+         setOnlineUsers(
+           new Set(
+             users.map((u: { userId: string; username: string }) => u.userId)
+           )
+         );
+       });
      }
 
      return () => {
@@ -83,19 +80,19 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
        socket.off("onlineUsers");
        socket.disconnect();
      };
-   }, [token, username]);
+   }, [token, user]);
    
   return (
-    <SocketContext.Provider value={{ socket, onlineUsers, isConnected }}>
+    <PartyContext.Provider value={{ socket, onlineUsers, isConnected }}>
       {children}
-    </SocketContext.Provider>
+    </PartyContext.Provider>
   );
 };
 
 export const useSocket = () => {
-  const context = useContext(SocketContext);
+  const context = useContext(PartyContext);
   if (context === undefined) {
-    throw new Error("useSocket must be used within a SocketProvider");
+    throw new Error("useSocket must be used within a PartyProvider");
   }
   return context;
 };

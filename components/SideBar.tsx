@@ -6,9 +6,10 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import React from "react";
 import Avatar from "./Avatar";
+import { useSocket } from "@/providers/SocketProvider";
 
 export default function SideBar() {
-
+const {isConnected} = useSocket()
   const pathname = usePathname();
     const { logout } = useAuth();
     const router = useRouter();
@@ -91,7 +92,11 @@ export default function SideBar() {
             />
           </svg>
         </button>
-        <Avatar/>
+        <Avatar />
+        <p className="text-white">
+
+        {isConnected ? 'Connected':"Disconnected"}
+        </p>
       </div>
     </div>
   );

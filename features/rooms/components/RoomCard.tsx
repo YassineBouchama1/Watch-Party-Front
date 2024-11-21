@@ -28,9 +28,9 @@ export default function RoomCard({ room }: { room: IRoomFetch }) {
         test type
       </p>
       {true ? (
-        <p className="absolute top-2 text-white/20 inline-flex items-center text-xs">
+        <p className="absolute top-[-2px] text-white/20 inline-flex items-center text-xs">
           Online{" "}
-          <span className="ml-2 w-2 h-2 block bg-green-500 rounded-full group-hover:animate-pulse"></span>
+          <span className="ml-2 w-4 h-4 block bg-green-500 rounded-full group-hover:animate-pulse"></span>
         </p>
       ) : (
         <p className="absolute top-2 text-white/20 inline-flex items-center text-xs">
