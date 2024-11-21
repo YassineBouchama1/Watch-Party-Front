@@ -1,98 +1,98 @@
 "use client";
-import React, { createContext, useContext, useEffect, useState } from "react";
-import socket from "../utils/socket";
-import { useAuth } from "../providers/AuthProvider";
-import toast from "react-hot-toast";
 
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  ReactNode,
+} from "react";
+import { useSocket } from "@/providers/SocketProvider";
 
+// Define the shape of the context
 interface PartyContextType {
-  socket: typeof socket;
-  onlineUsers: Set<string>;
-  isConnected: boolean;
+  usersInParty: string[];
 }
 
+// Define the props for the PartyProvider component
+interface PartyProviderProps {
+  children: ReactNode;
+  partyId: string;
+  username?: string;
+}
+
+// Create the context with an undefined initial value
 const PartyContext = createContext<PartyContextType | undefined>(undefined);
-//this is the config socketion
-export const PartyProvider: React.FC<{ children: React.ReactNode }> = ({
+
+// PartyProvider component to manage party-specific socket events
+export const PartyProvider: React.FC<PartyProviderProps> = ({
   children,
+  partyId,
+
 }) => {
-  const [isConnected, setIsConnected] = useState(false);
-  const [onlineUsers, setOnlineUsers] = useState<Set<string>>(new Set());
-  const { token, user } = useAuth();
+  const { socket, onlineUsers } = useSocket();
+  const [usersInParty, setUsersInParty] = useState<string[]>([]);
 
-   useEffect(() => {
-     if (token || user?.username) {
-       // Initialize socket connection
-       if (token) {
-         socket.auth = { token };
-       } else if (user?.username) {
-         socket.auth = { username: user.username };
-       }
-       socket.connect();
+  useEffect(() => {
+    if (partyId ) {
+      // Join the party
+      socket.emit("join:party", { partyId });
 
-       // Connection events
-       socket.on("connect", () => {
-         setIsConnected(true);
-         console.log("Connected to socket server");
-       });
+      // Listen for the initial list of users in the party
+      socket.on("list:ConnectedParty", (users: string[]) => {
+        setUsersInParty(users);
+        console.log("Users in party:", users);
+      });
 
-       socket.on("connect_error", (error) => {
-         console.error("Socket connection error:", error);
-         setIsConnected(false);
-       });
+      // Listen for new user connections in the same party
+      socket.on(
+        "user:connectedParty",
+        (data: { role: string; username: string }) => {
+        
+            setUsersInParty((prevUsers) => [...prevUsers, data.username]);
+            console.log(`${data.username} has joined the party`);
+          }
+        
+      );
 
-       // User status events
-       socket.on("user:connected", (data) => {
-         setOnlineUsers((prev) => new Set(prev).add(data.userId));
-         toast.success(`${data.username} is now online`, {
-           position: "bottom-right",
-           duration: 3000,
-         });
-       });
+      // Listen for user disconnections in the same party
+      socket.on(
+        "user:disconnectedParty",
+        (data: { role: string; username: string }) => {
+         
+            setUsersInParty((prevUsers) =>
+              prevUsers.filter((user) => user !== data.username)
+            );
+            console.log(`${data.username} has left the party`);
+          
+        }
+      );
+    }
 
-       socket.on("user:disconnected", (data) => {
-         setOnlineUsers((prev) => {
-           const newSet = new Set(prev);
-           newSet.delete(data.userId);
-           return newSet;
-         });
-         toast(`${data.username} is now offline`, {
-           position: "bottom-right",
-           duration: 3000,
-         });
-       });
+    return () => {
+      if (partyId ) {
+        // Leave the party
+        socket.emit("leave:party", { partyId });
+      }
+      // Clean up event listeners
+      socket.off("list:ConnectedParty");
+      socket.off("user:connectedParty");
+      socket.off("user:disconnectedParty");
+    };
+  }, [partyId, socket]);
 
-       // Initial online users
-       socket.on("onlineUsers", (users) => {
-         setOnlineUsers(
-           new Set(
-             users.map((u: { userId: string; username: string }) => u.userId)
-           )
-         );
-       });
-     }
-
-     return () => {
-       socket.off("connect");
-       socket.off("connect_error");
-       socket.off("user:connected");
-       socket.off("user:disconnected");
-       socket.off("onlineUsers");
-       socket.disconnect();
-     };
-   }, [token, user]);
-   
   return (
-    <PartyContext.Provider value={{ socket, onlineUsers, isConnected }}>
+    <PartyContext.Provider value={{ usersInParty }}>
       {children}
     </PartyContext.Provider>
   );
 };
 
-export const useSocket = () => {
+// Custom hook to use the PartyContext
+export const useParty = (): PartyContextType => {
   const context = useContext(PartyContext);
-  if (context === undefined) {
-    throw new Error("useSocket must be used within a PartyProvider");
+  if (!context) {
+    throw new Error("useParty must be used within a PartyProvider");
   }
   return context;
 };

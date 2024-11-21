@@ -1,8 +1,15 @@
+'use client'
+import { useParty } from '@/providers/PartyProvider';
+import Link from 'next/link';
 import type { FC } from 'react';
 
 interface ChatBarProps {}
 
 const ChatBar: FC<ChatBarProps> = ({}) => {
+
+
+  const { usersInParty } = useParty();
+
         return (
           <aside className="w-64 bg-gray-800 text-white p-4">
             <div className="flex items-center space-x-2 mb-4">
@@ -17,6 +24,18 @@ const ChatBar: FC<ChatBarProps> = ({}) => {
                 Request Control
               </button>
             </div>
+            <div>
+              <h2>Users in Party</h2>
+              <ul>
+                {usersInParty.map((user, index) => (
+                  // Assuming user is an object with a username property
+                  <li key={index}>{user?.username!}</li>
+                ))}
+              </ul>
+            </div>
+            <Link href={'/dashboard'}>
+            
+            dashboard</Link>
           </aside>
         );
 }
