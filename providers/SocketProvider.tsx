@@ -21,16 +21,17 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [isConnected, setIsConnected] = useState(false);
   const [onlineUsers, setOnlineUsers] = useState<Set<string>>(new Set());
-  const { token } = useAuth();
+  const { token,user,guest } = useAuth();
 
-  // Fallback username for guest users
-  const username = "fake guest";
+
 
   useEffect(() => {
     // Establish socket connection if token or username is available
-    if (token || username) {
+    if (token || user?.username || guest?.username) {
       // Set authentication details for the socket
-      socket.auth = token ? { token } : { username };
+      socket.auth = token
+        ? { token }
+        : { username: guest?.username, id: guest?.id };
       socket.connect();
 
       // Handle successful connection
@@ -76,7 +77,7 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
         socket.disconnect();
       };
     }
-  }, [token, username]);
+  }, [token, user, guest]);
 
   return (
     <SocketContext.Provider value={{ socket, onlineUsers, isConnected }}>
